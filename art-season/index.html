@@ -43,7 +43,7 @@ img{max-width:100%;display:block}
 .eyebrow{font-family:var(--en);font-size:13px;letter-spacing:.08em;text-transform:uppercase;display:flex;gap:10px;align-items:center;margin-bottom:22px}
 .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block}
 .hero h1{font-weight:900;font-size:clamp(48px,7.6vw,100px);line-height:1.1;letter-spacing:-.02em}
-.hero h1 .swap{color:#cc8500;display:inline-block;min-width:2em;font-size:.8em;line-height:1.3125;vertical-align:top}
+.hero h1 .swap{color:#cc8500;display:inline-block;min-width:2em;font-size:.8em;line-height:1.375;vertical-align:top;transition:color .3s}
 .hero h1 .swap.out{animation:out .35s forwards}.hero h1 .swap.in{animation:in .45s}
 @keyframes out{to{opacity:0;transform:translateY(-.25em)}}
 @keyframes in{from{opacity:0;transform:translateY(.25em)}}
@@ -176,13 +176,13 @@ const CONFIG = {
     time: "每場約 3 小時",
     place: "桃園校區（教室待定）",
     audience: "數媒系同學保留10位，數媒系學會成員10位，外系同學10位",
-    registerUrl: "#",            // ← 換成 Google 表單報名網址
-    maxPicks: 2                  // 每人可選幾個志願
+    voteUrl: "#",                // ← 換成 Google 表單「投票」網址
+    voteEntry: ""                // （選填）表單預填欄位代碼，例如 "entry.123456789"，填了會自動帶入所選課程
   },
   courses: [
     {
       id: "metal", no: "01", name: "金工", en: "Metalsmithing",
-      cat: "金屬", color: "var(--metal)", art: "metal", image: "images/metalwork.png",
+      cat: "金屬", color: "var(--metal)", art: "metal", heroColor: "#cc8500", image: "images/metalwork.png",
       price: 400, seats: 30, left: 30, duration: "3 hr",
       intro: "把一片黃銅片，敲打、鋸切、打磨成專屬於你的戒指或墜飾。在一次次敲擊裡，感受材料從冷硬到有溫度的轉化。",
       take: ["黃銅戒指或墜飾 1 件", "個人字母或紋樣敲印", "收納小布袋"],
@@ -191,7 +191,7 @@ const CONFIG = {
     },
     {
       id: "soap", no: "02", name: "MP 造型手工皂", en: "Melt & Pour Soap",
-      cat: "香氛", color: "var(--soap)", art: "soap", image: "images/soap.png",
+      cat: "香氛", color: "var(--soap)", art: "soap", heroColor: "#38b5cf", image: "images/soap.png",
       price: 400, seats: 40, left: 40, duration: "3 hr",
       intro: "MP（Melt & Pour）皂基免接觸強鹼，融化、調色、入模就能完成。用分層、嵌入與渲染，做出一塊能洗手也能欣賞的小作品。",
       take: ["造型手工皂 3–4 顆", "精油香氣自選", "包裝紙與標籤"],
@@ -200,7 +200,7 @@ const CONFIG = {
     },
     {
       id: "candle", no: "03", name: "香氛蠟燭", en: "Scented Candle",
-      cat: "香氛", color: "var(--candle)", art: "candle", image: "images/candle.png",
+      cat: "香氛", color: "var(--candle)", art: "candle", heroColor: "#9473bd", image: "images/candle.png",
       price: 400, seats: 40, left: 40, duration: "3 hr",
       intro: "從調香開始，學習前、中、後調的搭配，再用大豆蠟與乾燥花完成一盞屬於自己的香氛蠟燭，把這個秋天的氣味裝進玻璃杯。",
       take: ["香氛蠟燭 1 杯（約 200ml）", "個人調香配方卡", "乾燥花裝飾"],
@@ -209,7 +209,7 @@ const CONFIG = {
     },
     {
       id: "resin", no: "04", name: "滴膠造型小物", en: "Resin Objects",
-      cat: "造型", color: "var(--resin)", art: "resin", image: "images/resin craft.png",
+      cat: "造型", color: "var(--resin)", art: "resin", heroColor: "#b586a8", image: "images/resin craft.png",
       price: 400, seats: 40, left: 40, duration: "3 hr",
       intro: "把乾燥花、亮片、碎玻璃與你的小收藏封存在透明滴膠裡，做成鑰匙圈、耳環或杯墊。像把一個瞬間凝固下來。",
       take: ["滴膠吊飾或鑰匙圈 2 件", "五金配件", "UV 燈照射固化體驗"],
@@ -219,6 +219,8 @@ const CONFIG = {
   ],
   faq: [
     ["需要有手作經驗嗎？", "完全不需要。四門課程都從零開始，講師會一步步帶領，重點是動手與享受過程。"],
+    ["投票就等於報名了嗎？", "還不是喔。這次是課程票選，結果將作為開課依據；正式報名時間與方式會另行公告。"],
+    ["可以投多門課程嗎？", "每人限投一票，請選出你最想參加的一門。"],
     ["作品可以當天帶走嗎？", "請先留下，等待11月份藝術季展覽後拍照完即可領回。部分作品（手工皂、蠟燭）需短暫靜置，建議預留課後 15 分鐘。"]
   ]
 };
@@ -231,12 +233,12 @@ const CONFIG = {
     <li><a href="#info">活動資訊</a></li>
     <li><a href="#faq">常見問題</a></li>
   </ul>
-  <button class="bag-btn" id="bagBtn" aria-haspopup="dialog">我的選課 (<b id="bagCount">0</b>)</button>
+  <button class="bag-btn" id="bagBtn" aria-haspopup="dialog">我的一票 (<b id="bagCount">0</b>)</button>
 </nav>
 
 <header class="hero" id="top">
   <div>
-    <p class="eyebrow"><i></i><span id="evTitle"></span> — Workshop</p>
+    <p class="eyebrow"><i></i><span id="evTitle"></span> — 課程票選中 VOTE NOW</p>
     <h1>動手做<br><span class="swap" id="swap">金工</span><br>轉化重生</h1>
   </div>
   <div class="hero-side">
@@ -259,8 +261,9 @@ const CONFIG = {
   <div class="sec-head"><h2><small>Information</small>活動資訊</h2></div>
   <dl class="info-grid" id="infoGrid"></dl>
   <ol class="steps">
-    <li><b>挑選課程</b>瀏覽四門工作坊，把有興趣的加入「我的選課」，並排好志願順序。</li>
-
+    <li><b>逛逛課程</b>點開四門工作坊，看看材料、流程與可以帶走的作品。</li>
+    <li><b>選出一門</b>在最想上的課程按「投這門一票」，每人限選一門。</li>
+    <li><b>前往投票</b>點「前往投票」，在表單送出你的一票。票選結果將作為開課與正式報名的依據。</li>
   </ol>
 </section>
 
@@ -271,7 +274,7 @@ const CONFIG = {
 
 <footer>
   <div class="big">MAKE<span>.</span><br>TRANSFORM<span>.</span></div>
-  <a class="cta" id="footCta" href="#" target="_blank" rel="noopener">前往報名 →</a>
+  <a class="cta" id="footCta" href="#" target="_blank" rel="noopener">前往投票 →</a>
   <div class="row"><span id="footHost"></span><span id="footTheme"></span></div>
 </footer>
 
@@ -290,13 +293,13 @@ const CONFIG = {
       <h4>注意事項</h4><ul id="dNotes"></ul>
     </div>
   </div>
-  <footer class="act"><button class="btn pri" id="dAdd">加入選課</button></footer>
+  <footer class="act"><button class="btn pri" id="dAdd">投這門一票</button></footer>
 </aside>
 
-<aside class="drawer" id="bag" role="dialog" aria-modal="true" aria-label="我的選課">
-  <header><span>我的選課</span><button class="close" data-close aria-label="關閉">×</button></header>
+<aside class="drawer" id="bag" role="dialog" aria-modal="true" aria-label="我的一票">
+  <header><span>我的一票</span><button class="close" data-close aria-label="關閉">×</button></header>
   <div class="body"><div id="bagList"></div></div>
-  <footer class="act"><a class="btn pri" id="bagGo" href="#" target="_blank" rel="noopener">前往報名 →</a></footer>
+  <footer class="act"><a class="btn pri" id="bagGo" href="#" target="_blank" rel="noopener">前往投票 →</a></footer>
 </aside>
 
 <div class="toast" id="toast" role="status"></div>
@@ -338,14 +341,20 @@ const visual = c => c.image ? `<img src="${c.image}" alt="${c.name}作品示意"
 const $ = s => document.querySelector(s);
 const E = CONFIG.event, C = CONFIG.courses;
 let bag = [];
-try{ bag = JSON.parse(localStorage.getItem("ntub-ws-bag")||"[]").filter(id=>C.some(c=>c.id===id)); }catch(e){}
+try{ bag = JSON.parse(localStorage.getItem("ntub-ws-bag")||"[]").filter(id=>C.some(c=>c.id===id)).slice(0,1); }catch(e){}
 const save = () => { try{ localStorage.setItem("ntub-ws-bag", JSON.stringify(bag)); }catch(e){} };
 
 $("#evTitle").textContent = E.title;
 $("#heroLead").textContent = `${E.theme}。${E.host}邀請你放下螢幕，用雙手把材料轉化成作品：金工、造型手工皂、香氛蠟燭與滴膠小物，四選一，三小時，帶一件作品回家。`;
 $("#footHost").textContent = E.host;
 $("#footTheme").textContent = `${E.title}｜${E.theme}`;
-[$("#footCta"), $("#bagGo")].forEach(a => a.href = E.registerUrl);
+const voteLink = () => {
+  if(!E.voteEntry || !bag.length || E.voteUrl==="#") return E.voteUrl;
+  const c = C.find(x=>x.id===bag[0]);
+  return E.voteUrl + (E.voteUrl.includes("?")?"&":"?") + "usp=pp_url&" + E.voteEntry + "=" + encodeURIComponent(c.name);
+};
+const syncLinks = () => [$("#footCta"), $("#bagGo")].forEach(a => a.href = voteLink());
+syncLinks();
 
 $("#marquee").innerHTML = Array(2).fill(C.map(c=>`<span>${c.name}</span><span class="en">${c.en}</span><em>✺</em>`).join("")+`<span>${E.theme}</span><em>✺</em>`).join("");
 
@@ -381,7 +390,7 @@ function hero(i){
   $("#heroVisual").style.background = c.color;
   $("#heroVisual").innerHTML = visual(c) + `<span class="tag en">${c.no} / 0${C.length} — ${c.en}</span>`;
   const s = $("#swap"); s.classList.remove("in"); s.classList.add("out");
-  setTimeout(()=>{ s.textContent = c.name.replace("MP ",""); s.classList.remove("out"); s.classList.add("in"); }, 380);
+  setTimeout(()=>{ s.textContent = c.name.replace("MP ",""); s.style.color = c.heroColor || ""; s.classList.remove("out"); s.classList.add("in"); }, 380);
 }
 hero(0);
 if(!matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(()=>hero(hi=(hi+1)%C.length), 2800);
@@ -406,30 +415,29 @@ function showDetail(id){
 }
 function syncAdd(){
   const b = $("#dAdd"), inBag = bag.includes(current.id);
-  b.textContent = current.left<=0 ? "已額滿" : inBag ? "✓ 已加入選課（點此移除）" : "加入選課";
-  b.disabled = current.left<=0; b.classList.toggle("added", inBag);
+  b.textContent = inBag ? "✓ 這是我的一票（點此取消）" : bag.length ? "改投這一門" : "投這門一票";
+  b.classList.toggle("added", inBag);
 }
 $("#grid").addEventListener("click", e => { const c = e.target.closest(".card"); c && showDetail(c.dataset.id); });
 $("#dAdd").onclick = () => {
   const id = current.id;
-  if(bag.includes(id)) bag = bag.filter(x=>x!==id);
-  else if(bag.length >= E.maxPicks) return toast(`最多選 ${E.maxPicks} 個志願，請先移除一門`);
-  else { bag.push(id); toast(`已加入：${current.name}`); }
-  save(); syncAdd(); renderBag();
+  if(bag.includes(id)){ bag = []; toast("已取消選擇"); }
+  else { toast(bag.length ? `已改投：${current.name}` : `已選擇：${current.name}，記得前往投票！`); bag = [id]; }
+  save(); syncAdd(); renderBag(); syncLinks();
 };
 
 function renderBag(){
   $("#bagCount").textContent = bag.length;
   const list = $("#bagList");
-  if(!bag.length){ list.innerHTML = `<div class="bag-empty">還沒有選課喔。<br>先去逛逛四門工作坊吧！</div>`; $("#bagGo").style.display="none"; return; }
+  if(!bag.length){ list.innerHTML = `<div class="bag-empty">還沒選出你的一票喔。<br>先逛逛四門工作坊，挑一門最想上的吧！</div>`; $("#bagGo").style.display="none"; return; }
   $("#bagGo").style.display="";
   list.innerHTML = `<div class="bag-list">${bag.map((id,i)=>{ const c=C.find(x=>x.id===id);
     return `<div class="bag-item"><div class="thumb" style="background:${c.color}">${ART[c.art]}</div>
-      <div><span class="rank en">第 ${i+1} 志願</span><br><b>${c.name}</b><small>NT$${c.price}・${c.duration}</small></div>
+      <div><span class="rank en">我的一票</span><br><b>${c.name}</b><small>NT$${c.price}・${c.duration}</small></div>
       <button class="rm" data-rm="${id}">移除</button></div>`;}).join("")}</div>
-    <p class="bag-note">志願順序依加入先後排列。前往報名表單時，請依此順序填寫；材料費於分發確認後繳交。</p>`;
+    <p class="bag-note">每人限投一票。點「前往投票」後，請在表單中選擇同一門課程並送出，才算完成投票喔！</p>`;
 }
-$("#bagList").addEventListener("click", e => { const id = e.target.dataset.rm; if(!id) return; bag = bag.filter(x=>x!==id); save(); renderBag(); });
+$("#bagList").addEventListener("click", e => { const id = e.target.dataset.rm; if(!id) return; bag = bag.filter(x=>x!==id); save(); renderBag(); syncLinks(); });
 $("#bagBtn").onclick = () => { renderBag(); open($("#bag")); };
 renderBag();
 
