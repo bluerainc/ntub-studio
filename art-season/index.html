@@ -68,8 +68,9 @@ section{padding:clamp(56px,8vw,110px) var(--gutter)}
 .filters{display:flex;gap:8px;flex-wrap:wrap}
 .chip{font-size:14px;border:1px solid var(--line);border-radius:999px;padding:7px 14px;transition:.2s}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,1.6vw,22px)}
-@media(max-width:1100px){.grid{grid-template-columns:repeat(2,1fr)}}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:clamp(12px,1.6vw,22px)}
+@media(max-width:1280px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.grid{grid-template-columns:1fr}}
 .card{display:flex;flex-direction:column;text-align:left;gap:12px;transition:opacity .3s}
 .card.hide{display:none}
@@ -147,7 +148,7 @@ footer .row{display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;m
 .bag-list{padding:12px var(--gutter)}
 .bag-item{display:grid;grid-template-columns:72px 1fr auto;gap:14px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}
 .bag-item .thumb{aspect-ratio:1;border-radius:4px;position:relative;overflow:hidden}
-.bag-item .thumb svg{position:absolute;inset:0;width:100%;height:100%}
+.bag-item .thumb svg,.bag-item .thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .bag-item small{display:block;color:var(--muted);font-size:13px;margin-top:3px}
 .bag-item .rank{font-family:var(--en);font-weight:700;color:var(--accent);font-size:13px}
 .bag-item .rm{font-size:13px;text-decoration:underline;color:var(--muted)}
@@ -172,56 +173,96 @@ const CONFIG = {
     title: "2026 北商藝術季",
     theme: "轉化重生：革新啟藝",
     host: "國立臺北商業大學 數位多媒體設計系",
-    date: "2026.11.XX（日期待定）",
-    time: "每場約 3 小時",
+    date: "依問卷結果公告",
+    time: "每場約 3 小時（時段依問卷安排）",
     place: "桃園校區（教室待定）",
     audience: "數媒系同學保留10位，數媒系學會成員10位，外系同學10位",
-    voteUrl: "#",                // ← 換成 Google 表單「投票」網址
+    voteUrl: "https://docs.google.com/forms/d/e/1FAIpQLSfZcP9Y31x2ms-IeqvHDByUpq5tvJqSflgSguk8SApufVBHvQ/viewform",   // 活動意願調查表單
     voteEntry: ""                // （選填）表單預填欄位代碼，例如 "entry.123456789"，填了會自動帶入所選課程
   },
   courses: [
+    // ── 目前開放票選的課程（順序與問卷第 1 題相同）──
     {
-      id: "metal", no: "01", name: "金工", en: "Metalsmithing",
+      id: "aroma", no: "01", name: "擴香石", hero: "擴香石", en: "Aroma Stone",
+      cat: "香氛", color: "#E4E6DC", art: "soap", heroColor: "#7a9e7e", image: "images/aroma Stone.png",
+      price: 0, seats: 30, left: 30, duration: "3 hr",
+      intro: "用石膏粉調色、入模，做出屬於自己的造型擴香石，再滴上喜歡的精油，讓書桌和房間都有自己的味道。",
+      take: ["造型擴香石 2–3 個", "精油小樣", "包裝袋與標籤"],
+      flow: ["認識石膏與模具", "配色與比例調配", "攪拌、入模、脫泡", "脫模、修邊與滴香"],
+      notes: ["攪拌石膏粉時請戴口罩", "作品需靜置約 30–40 分鐘脫模"]
+    },
+    {
+      id: "soap", no: "02", name: "造型香皂", hero: "造型香皂", en: "Melt & Pour Soap",
+      cat: "香氛", color: "var(--soap)", art: "soap", heroColor: "#38b5cf", image: "images/soap.png",
+      price: 0, seats: 30, left: 30, duration: "3 hr",
+      intro: "使用 MP（Melt & Pour）皂基，免接觸強鹼，融化、調色、入模就能完成。用分層、嵌入與渲染，做出一塊能洗手也能欣賞的小作品。",
+      take: ["造型香皂 3–4 顆", "精油香氣自選", "包裝紙與標籤"],
+      flow: ["皂基與色粉介紹", "配色與造型構想", "融化、調色、分層入模", "脫模與包裝設計"],
+      notes: ["皂基加熱後溫度高，請小心操作", "作品需靜置約 30 分鐘脫模"]
+    },
+    {
+      id: "jelly", no: "03", name: "果凍蠟", hero: "果凍蠟", en: "Jelly Wax",
+      cat: "香氛", color: "#F6DCE3", art: "candle", heroColor: "#e0708a", image: "images/jelly wax.png",
+      price: 0, seats: 30, left: 30, duration: "3 hr",
+      intro: "透明 Q 彈的果凍蠟，像一杯凝固的海洋或汽水。加入蠟製小配件、貝殼與色彩，做出點亮時會透光的造型蠟燭。",
+      take: ["果凍蠟燭 1 杯", "造型小配件", "標籤卡"],
+      flow: ["果凍蠟與容器介紹", "配色與場景構想", "融蠟、調色、入杯", "擺放配件與凝固"],
+      notes: ["融蠟溫度高，請依講師指示操作", "蠟燭需靜置約 1 小時凝固"]
+    },
+    {
+      id: "embBag", no: "04", name: "刺繡（收納包、縫紉）", hero: "刺繡收納包", en: "Embroidered Bag",
+      cat: "織品", color: "#EFE3D3", art: "metal", heroColor: "#c0622f", image: "images/embroidered Bag.png",
+      price: 0, seats: 30, left: 30, duration: "3 hr",
+      intro: "從穿針、基礎繡法到手縫組合，在布面上繡出自己設計的圖案，再縫成一個實用的收納小包。慢慢來，一針一線都是你的。",
+      take: ["手縫刺繡收納包 1 個", "繡線與針組", "個人圖案草稿"],
+      flow: ["認識布料、繡線與工具", "圖案設計與轉印", "基礎繡法與刺繡", "縫合組裝收納包"],
+      notes: ["使用針具請小心", "零基礎也能完成，講師會提供圖稿"]
+    },
+    {
+      id: "embKey", no: "05", name: "刺繡（吊飾、電腦刺繡）", hero: "刺繡吊飾", en: "Embroidery Keychain",
+      cat: "織品", color: "#DCE3EF", art: "resin", heroColor: "#4a6fa5", image: "images/embroiderykeychain.png",
+      price: 0, seats: 30, left: 30, duration: "3 hr",
+      intro: "把你設計的小圖案交給電腦刺繡機，一針一線自動繡出來，再修邊、加上五金，做成專屬吊飾。數位設計 × 手作的完美結合。",
+      take: ["電腦刺繡吊飾 1–2 個", "五金配件"],
+      flow: ["認識電腦刺繡機與檔案", "繪製或挑選圖案", "上機刺繡", "修剪、封邊與組裝五金"],
+      notes: ["機器請依講師指示操作", "圖案以簡單色塊效果最好"]
+    },
+
+    // ── 暫不開放的課程：想重新上架，把 hidden: true 改成 hidden: false ──
+    {
+      id: "metal", no: "06", name: "金工", en: "Metalsmithing", hidden: true,
       cat: "金屬", color: "var(--metal)", art: "metal", heroColor: "#cc8500", image: "images/metalwork.png",
-      price: 400, seats: 30, left: 30, duration: "3 hr",
+      price: 0, seats: 30, left: 30, duration: "3 hr",
       intro: "把一片黃銅片，敲打、鋸切、打磨成專屬於你的戒指或墜飾。在一次次敲擊裡，感受材料從冷硬到有溫度的轉化。",
       take: ["黃銅戒指或墜飾 1 件", "個人字母或紋樣敲印", "收納小布袋"],
       flow: ["認識工具與安全須知", "設計草圖與尺寸量測", "鋸切、敲打、塑形", "拋光與完成"],
       notes: ["請穿著包鞋，長髮需綁起", "課程使用鋸弓與銼刀，請依講師指示操作"]
     },
     {
-      id: "soap", no: "02", name: "MP 造型手工皂", en: "Melt & Pour Soap",
-      cat: "香氛", color: "var(--soap)", art: "soap", heroColor: "#38b5cf", image: "images/soap.png",
-      price: 400, seats: 40, left: 40, duration: "3 hr",
-      intro: "MP（Melt & Pour）皂基免接觸強鹼，融化、調色、入模就能完成。用分層、嵌入與渲染，做出一塊能洗手也能欣賞的小作品。",
-      take: ["造型手工皂 3–4 顆", "精油香氣自選", "包裝紙與標籤"],
-      flow: ["皂基與色粉介紹", "配色與造型構想", "融化、調色、分層入模", "脫模與包裝設計"],
-      notes: ["皂基加熱後溫度高，請小心操作", "作品需靜置約 30 分鐘脫模"]
-    },
-    {
-      id: "candle", no: "03", name: "香氛蠟燭", en: "Scented Candle",
+      id: "candle", no: "07", name: "香氛蠟燭", en: "Scented Candle", hidden: true,
       cat: "香氛", color: "var(--candle)", art: "candle", heroColor: "#9473bd", image: "images/candle.png",
-      price: 400, seats: 40, left: 40, duration: "3 hr",
-      intro: "從調香開始，學習前、中、後調的搭配，再用大豆蠟與乾燥花完成一盞屬於自己的香氛蠟燭，把這個秋天的氣味裝進玻璃杯。",
+      price: 0, seats: 30, left: 30, duration: "3 hr",
+      intro: "從調香開始，學習前、中、後調的搭配，再用大豆蠟與乾燥花完成一盞屬於自己的香氛蠟燭。",
       take: ["香氛蠟燭 1 杯（約 200ml）", "個人調香配方卡", "乾燥花裝飾"],
       flow: ["香調入門與試香", "調配個人香氛", "融蠟、入杯、固定燭芯", "表面裝飾與標籤設計"],
-      notes: ["對特定香氣敏感者請事先告知", "蠟燭需約 2 小時完全凝固，可現場帶回"]
+      notes: ["對特定香氣敏感者請事先告知", "蠟燭需約 2 小時完全凝固"]
     },
     {
-      id: "resin", no: "04", name: "滴膠造型小物", en: "Resin Objects",
+      id: "resin", no: "08", name: "滴膠造型小物", en: "Resin Objects", hidden: true,
       cat: "造型", color: "var(--resin)", art: "resin", heroColor: "#b586a8", image: "images/resin craft.png",
-      price: 400, seats: 40, left: 40, duration: "3 hr",
-      intro: "把乾燥花、亮片、碎玻璃與你的小收藏封存在透明滴膠裡，做成鑰匙圈、耳環或杯墊。像把一個瞬間凝固下來。",
+      price: 0, seats: 30, left: 30, duration: "3 hr",
+      intro: "把乾燥花、亮片與你的小收藏封存在透明滴膠裡，做成鑰匙圈、耳環或杯墊。像把一個瞬間凝固下來。",
       take: ["滴膠吊飾或鑰匙圈 2 件", "五金配件", "UV 燈照射固化體驗"],
       flow: ["模具與素材挑選", "構圖與配色", "調膠、入模、UV 固化", "脫模、修邊與組裝五金"],
       notes: ["現場提供手套，全程保持通風", "請勿直視 UV 燈"]
     }
   ],
   faq: [
-    ["需要有手作經驗嗎？", "完全不需要。四門課程都從零開始，講師會一步步帶領，重點是動手與享受過程。"],
-    ["投票就等於報名了嗎？", "還不是喔。這次是課程票選，結果將作為開課依據；正式報名時間與方式會另行公告。"],
-    ["課程費用有補助嗎？", "本課程將全額補助，不需額外繳交費用喔!"],
-    ["作品可以當天帶走嗎？", "請先留下，等待11月份藝術季展覽後拍照完即可領回。部分作品（手工皂、蠟燭）需短暫靜置，建議預留課後 15 分鐘。"]
+    ["需要有手作經驗嗎？", "完全不需要。每門課程都從零開始，講師會一步步帶領，重點是動手與享受過程。"],
+    ["要付材料費嗎？", "不用！材料由數媒系提供、系學會協辦，參加完全免費。"],
+    ["填了問卷就等於報名了嗎？", "還不是喔。這是活動意願調查，結果將作為開課項目、時段與名額的依據；正式報名方式會另行公告。"],
+    ["可以投多門課程嗎？", "問卷第 1 題請選出你最想參加的一門；其他想上的工作坊，可以寫在最後一題告訴我們。"],
+    ["作品可以當天帶走嗎？", "請先留下，等待 11 月藝術季展覽拍照後即可領回。部分作品（造型香皂、擴香石、果凍蠟）需短暫靜置，建議預留課後 15 分鐘。"]
   ]
 };
 </script>
@@ -251,7 +292,7 @@ const CONFIG = {
 
 <section id="courses">
   <div class="sec-head">
-    <h2><small>Workshops — 04 Courses</small>選課程，<br>創作手工藝術作品</h2>
+    <h2><small id="courseCount">Workshops</small>選課程，<br>創作手工藝術作品</h2>
     <div class="filters" role="group" aria-label="篩選課程" id="filters"></div>
   </div>
   <div class="grid" id="grid"></div>
@@ -261,9 +302,9 @@ const CONFIG = {
   <div class="sec-head"><h2><small>Information</small>活動資訊</h2></div>
   <dl class="info-grid" id="infoGrid"></dl>
   <ol class="steps">
-    <li><b>逛逛課程</b>點開四門工作坊，看看材料、流程與可以帶走的作品。</li>
+    <li><b>逛逛課程</b>點開每一門工作坊，看看材料、流程與可以帶走的作品。全部免費，材料由系上提供！</li>
     <li><b>選出一門</b>在最想上的課程按「投這門一票」，每人限選一門。</li>
-    <li><b>前往投票</b>點「前往投票」，在表單送出你的一票。票選結果將作為開課與正式報名的依據。</li>
+    <li><b>前往投票</b>點「前往投票」填寫意願調查，第 1 題選同一門課並送出。結果將作為開課、時段與名額的依據。</li>
   </ol>
 </section>
 
@@ -339,13 +380,15 @@ const visual = c => c.image ? `<img src="${c.image}" alt="${c.name}作品示意"
 
 /* ---------- 渲染 ---------- */
 const $ = s => document.querySelector(s);
-const E = CONFIG.event, C = CONFIG.courses;
+const E = CONFIG.event, C = CONFIG.courses.filter(c => !c.hidden);
+const fee = c => c.price ? `NT$${c.price}` : "免費";
 let bag = [];
 try{ bag = JSON.parse(localStorage.getItem("ntub-ws-bag")||"[]").filter(id=>C.some(c=>c.id===id)).slice(0,1); }catch(e){}
 const save = () => { try{ localStorage.setItem("ntub-ws-bag", JSON.stringify(bag)); }catch(e){} };
 
 $("#evTitle").textContent = E.title;
-$("#heroLead").textContent = `${E.theme}。${E.host}邀請你放下螢幕，用雙手把材料轉化成作品：金工、造型手工皂、香氛蠟燭與滴膠小物，四選一，三小時，帶一件作品回家。`;
+$("#heroLead").textContent = `${E.theme}。${E.host}邀請你放下螢幕，用雙手把材料轉化成作品：${C.map(c=>c.hero||c.name).join("、")}。${C.length} 門免費工作坊，材料由系上提供，選出你最想上的一門，帶一件作品回家。`;
+$("#courseCount").textContent = `Workshops — ${String(C.length).padStart(2,"0")} Courses`;
 $("#footHost").textContent = E.host;
 $("#footTheme").textContent = `${E.title}｜${E.theme}`;
 const voteLink = () => {
@@ -374,7 +417,7 @@ $("#grid").innerHTML = C.map(c => {
       <span class="status ${low?"low":""}">${c.left<=0?"已額滿":low?`剩 ${c.left} 位`:`名額 ${c.seats}`}</span>
       <span class="view"><span>查看課程</span><span>→</span></span>
     </div>
-    <div class="meta"><h3>${c.name}</h3><span class="price">NT$${c.price}</span></div>
+    <div class="meta"><h3>${c.name}</h3><span class="price">${fee(c)}</span></div>
     <div class="sub"><span class="en">${c.en}</span><span>${c.cat}・${c.duration}</span></div>
   </button>`;
 }).join("");
@@ -390,7 +433,7 @@ function hero(i){
   $("#heroVisual").style.background = c.color;
   $("#heroVisual").innerHTML = visual(c) + `<span class="tag en">${c.no} / 0${C.length} — ${c.en}</span>`;
   const s = $("#swap"); s.classList.remove("in"); s.classList.add("out");
-  setTimeout(()=>{ s.textContent = c.name.replace("MP ",""); s.style.color = c.heroColor || ""; s.classList.remove("out"); s.classList.add("in"); }, 380);
+  setTimeout(()=>{ s.textContent = c.hero || c.name; s.style.color = c.heroColor || ""; s.classList.remove("out"); s.classList.add("in"); }, 380);
 }
 hero(0);
 if(!matchMedia("(prefers-reduced-motion: reduce)").matches) setInterval(()=>hero(hi=(hi+1)%C.length), 2800);
@@ -409,7 +452,7 @@ function showDetail(id){
   $("#dImg").style.background = c.color; $("#dImg").innerHTML = visual(c);
   $("#dTitle").textContent = c.name; $("#dEn").textContent = c.en;
   $("#dIntro").textContent = c.intro;
-  $("#dFacts").innerHTML = [["材料費",`NT$${c.price}`],["時長",c.duration],["名額",`${c.left}/${c.seats}`]].map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join("");
+  $("#dFacts").innerHTML = [["材料費",fee(c)],["時長",c.duration],["名額",`${c.left}/${c.seats}`]].map(([k,v])=>`<div><span>${k}</span><b>${v}</b></div>`).join("");
   ["take","flow","notes"].forEach(k => $("#d"+k[0].toUpperCase()+k.slice(1)).innerHTML = c[k].map(x=>`<li>${x}</li>`).join(""));
   syncAdd(); open($("#detail"));
 }
@@ -429,13 +472,13 @@ $("#dAdd").onclick = () => {
 function renderBag(){
   $("#bagCount").textContent = bag.length;
   const list = $("#bagList");
-  if(!bag.length){ list.innerHTML = `<div class="bag-empty">還沒選出你的一票喔。<br>先逛逛四門工作坊，挑一門最想上的吧！</div>`; $("#bagGo").style.display="none"; return; }
+  if(!bag.length){ list.innerHTML = `<div class="bag-empty">還沒選出你的一票喔。<br>先逛逛各門工作坊，挑一門最想上的吧！</div>`; $("#bagGo").style.display="none"; return; }
   $("#bagGo").style.display="";
   list.innerHTML = `<div class="bag-list">${bag.map((id,i)=>{ const c=C.find(x=>x.id===id);
-    return `<div class="bag-item"><div class="thumb" style="background:${c.color}">${ART[c.art]}</div>
-      <div><span class="rank en">我的一票</span><br><b>${c.name}</b><small>NT$${c.price}・${c.duration}</small></div>
+    return `<div class="bag-item"><div class="thumb" style="background:${c.color}">${visual(c)}</div>
+      <div><span class="rank en">我的一票</span><br><b>${c.name}</b><small>${fee(c)}・${c.duration}</small></div>
       <button class="rm" data-rm="${id}">移除</button></div>`;}).join("")}</div>
-    <p class="bag-note">每人限投一票。點「前往投票」後，請在表單中選擇同一門課程並送出，才算完成投票喔！</p>`;
+    <p class="bag-note">每人限投一票。點「前往投票」後，請在問卷第 1 題選擇同一門課程並送出，才算完成投票喔！</p>`;
 }
 $("#bagList").addEventListener("click", e => { const id = e.target.dataset.rm; if(!id) return; bag = bag.filter(x=>x!==id); save(); renderBag(); syncLinks(); });
 $("#bagBtn").onclick = () => { renderBag(); open($("#bag")); };
